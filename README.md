@@ -1,4 +1,4 @@
-# cloud\
+# cloud
 
 This repo is for sharing files among several severs
 Not for project, I'll use just like clouds.
