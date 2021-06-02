@@ -1,0 +1,48 @@
+Event based metrics (onset-offset)
+========================================
+  Evaluated length                  : 9831.28 sec
+  Evaluated files                   : 1098 
+  Evaluate onset                    : True 
+  Evaluate offset                   : True 
+  T collar                          : 200.00 ms
+  Offset (length)                   : 20.00 %
+
+  Overall metrics (micro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 0.27 %
+    Precision                       : 1.26 %
+    Recall                          : 0.15 %
+  Error rate
+    Error rate (ER)                 : 1.11 
+    Substitution rate               : 0.00 
+    Deletion rate                   : 1.00 
+    Insertion rate                  : 0.12 
+
+  Class-wise average metrics (macro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 0.79 %
+    Precision                       : 1.25 %
+    Recall                          : 0.58 %
+  Error rate
+    Error rate (ER)                 : 1.23 
+    Deletion rate                   : 0.99 
+    Insertion rate                  : 0.24 
+  
+
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    |
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ |
+    Blender      | 93      48    | 0.0%     0.0%     0.0%   | 1.52     1.00     0.52   |
+    Cat          | 338     94    | 0.0%     0.0%     0.0%   | 1.28     1.00     0.28   |
+    Running_wa.. | 214     48    | 0.8%     2.1%     0.5%   | 1.21     1.00     0.22   |
+    Alarm_bell.. | 393     48    | 0.0%     0.0%     0.0%   | 1.12     1.00     0.12   |
+    Dog          | 550     48    | 0.0%     0.0%     0.0%   | 1.09     1.00     0.09   |
+    Speech       | 1645    48    | 0.0%     0.0%     0.0%   | 1.03     1.00     0.03   |
+    Frying       | 93      48    | 7.1%     10.4%    5.4%   | 1.41     0.95     0.46   |
+    Dishes       | 548     48    | 0.0%     0.0%     0.0%   | 1.09     1.00     0.09   |
+    Vacuum_cle.. | 87      48    | 0.0%     0.0%     0.0%   | 1.55     1.00     0.55   |
+    Electric_s.. | 60      0     | 0.0%     0.0%     0.0%   | 1.00     1.00     0.00   |
+

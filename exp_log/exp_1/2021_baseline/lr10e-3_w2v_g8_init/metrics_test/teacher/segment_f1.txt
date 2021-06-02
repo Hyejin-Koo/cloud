@@ -1,0 +1,55 @@
+Segment based metrics
+========================================
+  Evaluated length                  : 10053.46 sec
+  Evaluated files                   : 1098 
+  Segment length                    : 1.00 sec
+
+  Overall metrics (micro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 39.94 %
+    Precision                       : 64.07 %
+    Recall                          : 29.01 %
+  Error rate
+    Error rate (ER)                 : 0.75 
+    Substitution rate               : 0.12 
+    Deletion rate                   : 0.59 
+    Insertion rate                  : 0.05 
+  Accuracy
+    Sensitivity                     : 29.01 %
+    Specificity                     : 98.08 %
+    Balanced accuracy               : 63.54 %
+    Accuracy                        : 90.78 %
+
+  Class-wise average metrics (macro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 74.56 %
+    Precision                       : 64.07 %
+    Recall                          : 8.92 %
+  Error rate
+    Error rate (ER)                 : 0.96 
+    Deletion rate                   : 0.91 
+    Insertion rate                  : 0.05 
+  Accuracy
+    Sensitivity                     : 8.92 %
+    Specificity                     : 97.38 %
+    Balanced accuracy               : 53.15 %
+    Accuracy                        : 90.78 %
+  
+
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    | Sens     Spec     Bacc     Acc     
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ | ------   ------   ------   ------  
+    Running_wa.. | 1227    0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    88.0%   
+    Speech       | 3514    4890  | 74.6%    64.1%    89.2%  | 0.61     0.11     0.50   | 89.2%    73.8%    81.5%    79.1%   
+    Alarm_bell.. | 986     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    90.3%   
+    Electric_s.. | 492     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    95.2%   
+    Frying       | 784     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    92.3%   
+    Vacuum_cle.. | 753     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    92.6%   
+    Blender      | 524     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    94.9%   
+    Dog          | 1069    0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    89.5%   
+    Cat          | 723     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    92.9%   
+    Dishes       | 727     0     | nan%     nan%     0.0%   | 1.00     1.00     0.00   | 0.0%     100.0%   50.0%    92.9%   
+
