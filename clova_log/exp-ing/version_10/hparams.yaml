@@ -1,0 +1,122 @@
+training:
+  batch_size:
+  - 2
+  - 2
+  - 4
+  batch_size_val: 24
+  const_max: 2
+  n_epochs_warmup: 50
+  num_workers: 6
+  n_epochs: 400
+  early_stop_patience: 200
+  accumulate_batches: 1
+  gradient_clip: 0.0
+  median_window: 7
+  val_thresholds:
+  - 0.5
+  n_test_thresholds: 50
+  ema_factor: 0.999
+  self_sup_loss: mse
+  backend: null
+  validation_interval: 1
+  weak_split: 0.9
+  seed: 42
+  mixup: soft
+  obj_metric_synth_type: intersection
+  note: applying wav2vec-preLibriSpeech960h&DCASE21, lr 0.0001, 1rnn, sigmoid
+scaler:
+  statistic: instance
+  normtype: minmax
+  dims:
+  - 0
+  - 2
+  savepath: ./scaler.ckpt
+data:
+  synth_folder: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/train/synthetic21_train/soundscapes_16k/
+  synth_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/train/synthetic21_train/soundscapes/
+  synth_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/train/synthetic21_train/soundscapes.tsv
+  weak_folder: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/train/weak_16k/
+  weak_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/train/weak/
+  weak_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/train/weak_missingdrop.tsv
+  unlabeled_folder: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/train/unlabel_in_domain_16k/
+  unlabeled_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/train/unlabel_in_domain/
+  synth_val_folder: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/validation/synthetic21_validation/soundscapes_16k/
+  synth_val_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/validation/synthetic21_validation/soundscapes/
+  synth_val_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/synthetic21_validation/soundscapes.tsv
+  synth_val_dur: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/synthetic21_validation/durations.tsv
+  test_folder: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/dataset/audio/validation/validation_16k/
+  test_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/validation/validation/
+  test_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/validation_missingdrop.tsv
+  test_dur: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/validation_durations.tsv
+  w2v_path: /home1/irteam/users/koo/fairseq/examples/wav2vec/train/DCASE2021/Libri_DCASE/libri_DCASEtuned.pt
+  audio_max_len: 10
+  fs: 16000
+  net_subsample: 4
+opt:
+  lr: 0.0001
+feats:
+  n_mels: 128
+  n_filters: 2048
+  hop_length: 80
+  n_window: 2048
+  sample_rate: 16000
+  f_min: 0
+  f_max: 8000
+net:
+  dropout: 0.5
+  rnn_layers: 1
+  n_in_channel: 1
+  nclass: 10
+  attention: true
+  n_RNN_cell: 128
+  activation: glu
+  rnn_type: BGRU
+  kernel_size:
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  padding:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  stride:
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  nb_filters:
+  - 16
+  - 32
+  - 64
+  - 128
+  - 128
+  - 128
+  - 128
+  pooling:
+  - - 1
+    - 4
+  - - 1
+    - 4
+  - - 1
+    - 2
+  - - 1
+    - 2
+  - - 1
+    - 2
+  - - 1
+    - 2
+  - - 1
+    - 2
+  dropout_recurrent: 0
+log_dir: ./exp/2021_baseline
