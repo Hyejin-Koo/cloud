@@ -1,14 +1,14 @@
 training:
   batch_size:
-  - 4
-  - 4
-  - 8
+  - 3
+  - 3
+  - 6
   batch_size_val: 24
   const_max: 2
   n_epochs_warmup: 50
   num_workers: 6
-  n_epochs: 500
-  early_stop_patience: 200
+  n_epochs: 400
+  early_stop_patience: 100
   accumulate_batches: 1
   gradient_clip: 0.0
   median_window: 7
@@ -22,9 +22,9 @@ training:
   weak_split: 0.9
   seed: 42
   mixup: soft
-  obj_metric_synth_type: intersection
-  note: applying wav2vec-LibriSpeech960h+DCASE21 pretrained, lr 0.00005, WRNN(relu,
-    rnn1), RNN dropout 0.2
+  obj_metric_synth_type: event
+  note: w2v(Libri+DCASE21) and use only labeled data (by not adding self loss), WFC,
+    early stop 300, ReLU, batch336, obj event
 scaler:
   statistic: instance
   normtype: minmax
@@ -54,7 +54,7 @@ data:
   fs: 16000
   net_subsample: 4
 opt:
-  lr: 5.0e-05
+  lr: 1.0e-05
 feats:
   n_mels: 128
   n_filters: 2048
@@ -119,5 +119,5 @@ net:
     - 2
   - - 1
     - 2
-  dropout_recurrent: 0.2
+  dropout_recurrent: 0
 log_dir: ./exp/2021_baseline
