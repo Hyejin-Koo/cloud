@@ -1,0 +1,48 @@
+Event based metrics (onset-offset)
+========================================
+  Evaluated length                  : 9831.28 sec
+  Evaluated files                   : 1098 
+  Evaluate onset                    : True 
+  Evaluate offset                   : True 
+  T collar                          : 200.00 ms
+  Offset (length)                   : 20.00 %
+
+  Overall metrics (micro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 29.96 %
+    Precision                       : 31.82 %
+    Recall                          : 28.30 %
+  Error rate
+    Error rate (ER)                 : 1.30 
+    Substitution rate               : 0.02 
+    Deletion rate                   : 0.70 
+    Insertion rate                  : 0.59 
+
+  Class-wise average metrics (macro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 21.10 %
+    Precision                       : 18.03 %
+    Recall                          : 27.59 %
+  Error rate
+    Error rate (ER)                 : 1.66 
+    Deletion rate                   : 0.72 
+    Insertion rate                  : 0.94 
+  
+
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    |
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ |
+    Dishes       | 548     212   | 0.8%     1.4%     0.5%   | 1.38     0.99     0.38   |
+    Running_wa.. | 214     248   | 30.3%    28.2%    32.7%  | 1.50     0.67     0.83   |
+    Blender      | 93      197   | 33.8%    24.9%    52.7%  | 2.06     0.47     1.59   |
+    Electric_s.. | 60      134   | 19.6%    14.2%    31.7%  | 2.60     0.68     1.92   |
+    Alarm_bell.. | 393     150   | 0.4%     0.7%     0.3%   | 1.38     1.00     0.38   |
+    Frying       | 93      200   | 34.8%    25.5%    54.8%  | 2.05     0.45     1.60   |
+    Dog          | 550     162   | 0.6%     1.2%     0.4%   | 1.29     1.00     0.29   |
+    Cat          | 338     208   | 9.9%     13.0%    8.0%   | 1.46     0.92     0.54   |
+    Speech       | 1645    1924  | 49.3%    45.7%    53.5%  | 1.10     0.47     0.63   |
+    Vacuum_cle.. | 87      141   | 31.6%    25.5%    41.4%  | 1.79     0.59     1.21   |
+

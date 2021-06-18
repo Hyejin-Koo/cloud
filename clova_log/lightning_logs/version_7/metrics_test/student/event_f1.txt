@@ -1,0 +1,48 @@
+Event based metrics (onset-offset)
+========================================
+  Evaluated length                  : 9831.28 sec
+  Evaluated files                   : 1098 
+  Evaluate onset                    : True 
+  Evaluate offset                   : True 
+  T collar                          : 200.00 ms
+  Offset (length)                   : 20.00 %
+
+  Overall metrics (micro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 28.68 %
+    Precision                       : 30.14 %
+    Recall                          : 27.36 %
+  Error rate
+    Error rate (ER)                 : 1.34 
+    Substitution rate               : 0.02 
+    Deletion rate                   : 0.70 
+    Insertion rate                  : 0.61 
+
+  Class-wise average metrics (macro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 19.81 %
+    Precision                       : 16.89 %
+    Recall                          : 25.85 %
+  Error rate
+    Error rate (ER)                 : 1.75 
+    Deletion rate                   : 0.74 
+    Insertion rate                  : 1.01 
+  
+
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    |
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ |
+    Cat          | 338     264   | 10.6%    12.1%    9.5%   | 1.59     0.91     0.69   |
+    Frying       | 93      114   | 34.8%    31.6%    38.7%  | 1.45     0.61     0.84   |
+    Speech       | 1645    1999  | 47.1%    42.9%    52.2%  | 1.17     0.48     0.69   |
+    Electric_s.. | 60      205   | 17.4%    11.2%    38.3%  | 3.65     0.62     3.03   |
+    Vacuum_cle.. | 87      160   | 29.1%    22.5%    41.4%  | 2.01     0.59     1.43   |
+    Dishes       | 548     170   | 0.8%     1.8%     0.5%   | 1.30     0.99     0.30   |
+    Dog          | 550     136   | 0.0%     0.0%     0.0%   | 1.25     1.00     0.25   |
+    Running_wa.. | 214     309   | 26.8%    22.7%    32.7%  | 1.79     0.67     1.12   |
+    Blender      | 93      174   | 31.5%    24.1%    45.2%  | 1.97     0.55     1.42   |
+    Alarm_bell.. | 393     119   | 0.0%     0.0%     0.0%   | 1.30     1.00     0.30   |
+
