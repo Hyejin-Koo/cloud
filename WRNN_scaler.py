@@ -93,7 +93,7 @@ class WRNN(nn.Module):
 #        x = feature.transpose(1,2)
         x = feature['x']
         x = self.activation(x)
-
+        x = self.scaler(x)
 
 
         # input size : (batch_size, n_frames, n) = [B,499,768]
@@ -131,3 +131,54 @@ class WRNN(nn.Module):
                     if self.freeze_bn:
                         m.weight.requires_grad = False
                         m.bias.requires_grad = False
+                        
+                        
+    def _init_scaler(self):
+        """ Scaler inizialization
+        Raises:
+            NotImplementedError: in case of not Implemented scaler
+        Returns:
+            TorchScaler: returns the scaler
+        """
+
+        if self.hparams["scaler"]["statistic"] == "instance":
+            scaler = TorchScaler(
+                "instance",
+                self.hparams["scaler"]["normtype"],
+                self.hparams["scaler"]["dims"],
+            )
+
+            return scaler
+        elif self.hparams["scaler"]["statistic"] == "dataset":
+            # we fit the scaler
+            scaler = TorchScaler(
+                "dataset",
+                self.hparams["scaler"]["normtype"],
+                self.hparams["scaler"]["dims"],
+            )
+        else:
+            raise NotImplementedError
+        if self.hparams["scaler"]["savepath"] is not None:
+            if os.path.exists(self.hparams["scaler"]["savepath"]):
+                scaler = torch.load(self.hparams["scaler"]["savepath"])
+                print(
+                    "Loaded Scaler from previous checkpoint from {}".format(
+                        self.hparams["scaler"]["savepath"]
+                    )
+                )
+                return scaler
+
+        self.train_loader = self.train_dataloader()
+        scaler.fit(
+            self.train_loader,
+            transform_func=lambda x: self.take_log(self.mel_spec(x[0])),
+        )
+
+        if self.hparams["scaler"]["savepath"] is not None:
+            torch.save(scaler, self.hparams["scaler"]["savepath"])
+            print(
+                "Saving Scaler from previous checkpoint at {}".format(
+                    self.hparams["scaler"]["savepath"]
+                )
+            )
+            return scaler
