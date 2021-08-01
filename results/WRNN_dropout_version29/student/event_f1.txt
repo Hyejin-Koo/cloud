@@ -1,0 +1,48 @@
+Event based metrics (onset-offset)
+========================================
+  Evaluated length                  : 10459.12 sec
+  Evaluated files                   : 1168 
+  Evaluate onset                    : True 
+  Evaluate offset                   : True 
+  T collar                          : 200.00 ms
+  Offset (length)                   : 20.00 %
+
+  Overall metrics (micro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 41.00 %
+    Precision                       : 40.49 %
+    Recall                          : 41.52 %
+  Error rate
+    Error rate (ER)                 : 1.17 
+    Substitution rate               : 0.03 
+    Deletion rate                   : 0.56 
+    Insertion rate                  : 0.58 
+
+  Class-wise average metrics (macro-average)
+  ======================================
+  F-measure
+    F-measure (F1)                  : 40.87 %
+    Precision                       : 38.46 %
+    Recall                          : 44.50 %
+  Error rate
+    Error rate (ER)                 : 1.28 
+    Deletion rate                   : 0.56 
+    Insertion rate                  : 0.73 
+  
+
+  Class-wise metrics
+  ======================================
+    Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    |
+    ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ |
+    Blender      | 94      130   | 44.6%    38.5%    53.2%  | 1.32     0.47     0.85   |
+    Dog          | 570     702   | 30.2%    27.4%    33.7%  | 1.56     0.66     0.89   |
+    Cat          | 341     331   | 38.1%    38.7%    37.5%  | 1.22     0.62     0.60   |
+    Speech       | 1752    1577  | 51.2%    54.1%    48.7%  | 0.93     0.51     0.41   |
+    Running_wa.. | 237     251   | 37.3%    36.3%    38.4%  | 1.29     0.62     0.68   |
+    Frying       | 94      159   | 43.5%    34.6%    58.5%  | 1.52     0.41     1.11   |
+    Electric_s.. | 65      88    | 37.9%    33.0%    44.6%  | 1.46     0.55     0.91   |
+    Vacuum_cle.. | 92      107   | 63.3%    58.9%    68.5%  | 0.79     0.32     0.48   |
+    Dishes       | 559     598   | 23.0%    22.2%    23.8%  | 1.59     0.76     0.83   |
+    Alarm_bell.. | 420     389   | 39.6%    41.1%    38.1%  | 1.16     0.62     0.55   |
+
