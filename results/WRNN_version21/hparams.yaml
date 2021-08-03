@@ -23,8 +23,8 @@ training:
   seed: 42
   mixup: soft
   obj_metric_synth_type: intersection
-  note: after wav2vec, HRNN, 768cells(direct), lib960h  hop80(default), lr 0.00005,
-    no-SpecAug, rnn dropout 0.4
+  note: after wav2vec, WRNN, 768cells(direct), lib+DC(not other!!),  hop80(default),
+    lr 0.00005
 scaler:
   statistic: instance
   normtype: minmax
@@ -49,7 +49,7 @@ data:
   test_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/eval/public/
   test_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dataset/metadata/eval/public.tsv
   test_dur: /home1/irteam/users/koo/share/DB/dcase2021/data/dataset/metadata/eval/public_durations.tsv
-  w2v_path: /home1/irteam/users/koo/fairseq/examples/hubert/hubert_base_ls960.pt
+  w2v_path: /home1/irteam/users/koo/fairseq/examples/wav2vec/train/DCASE2021/libripre_dc_rep/checkpoint_best.pt
   audio_max_len: 11
   fs: 16000
   net_subsample: 4
@@ -119,7 +119,7 @@ net:
     - 2
   - - 1
     - 2
-  dropout_recurrent: 0.4
+  dropout_recurrent: 0
   freq_mask_para: 18
   time_mask_num: 8
   freq_mask_num: 10

@@ -1,7 +1,7 @@
 Event based metrics (onset-offset)
 ========================================
-  Evaluated length                  : 10459.12 sec
-  Evaluated files                   : 1168 
+  Evaluated length                  : 6635.32 sec
+  Evaluated files                   : 692 
   Evaluate onset                    : True 
   Evaluate offset                   : True 
   T collar                          : 200.00 ms
@@ -10,39 +10,39 @@ Event based metrics (onset-offset)
   Overall metrics (micro-average)
   ======================================
   F-measure
-    F-measure (F1)                  : 29.47 %
-    Precision                       : 31.95 %
-    Recall                          : 27.34 %
+    F-measure (F1)                  : 32.61 %
+    Precision                       : 38.31 %
+    Recall                          : 28.39 %
   Error rate
-    Error rate (ER)                 : 1.29 
+    Error rate (ER)                 : 1.15 
     Substitution rate               : 0.02 
     Deletion rate                   : 0.70 
-    Insertion rate                  : 0.56 
+    Insertion rate                  : 0.44 
 
   Class-wise average metrics (macro-average)
   ======================================
   F-measure
-    F-measure (F1)                  : 37.67 %
-    Precision                       : 37.74 %
-    Recall                          : 38.31 %
+    F-measure (F1)                  : 37.27 %
+    Precision                       : 42.58 %
+    Recall                          : 34.32 %
   Error rate
-    Error rate (ER)                 : 1.23 
-    Deletion rate                   : 0.62 
-    Insertion rate                  : 0.61 
+    Error rate (ER)                 : 1.10 
+    Deletion rate                   : 0.66 
+    Insertion rate                  : 0.44 
   
 
   Class-wise metrics
   ======================================
     Event label  | Nref    Nsys  | F        Pre      Rec    | ER       Del      Ins    |
     ------------ | -----   ----- | ------   ------   ------ | ------   ------   ------ |
-    Cat          | 341     357   | 36.7%    35.9%    37.5%  | 1.30     0.62     0.67   |
-    Electric_s.. | 65      89    | 53.2%    46.1%    63.1%  | 1.11     0.37     0.74   |
-    Speech       | 1752    1204  | 28.3%    34.7%    23.9%  | 1.21     0.76     0.45   |
-    Vacuum_cle.. | 92      102   | 62.9%    59.8%    66.3%  | 0.78     0.34     0.45   |
-    Blender      | 94      90    | 39.1%    40.0%    38.3%  | 1.19     0.62     0.57   |
-    Dishes       | 559     660   | 23.3%    21.5%    25.4%  | 1.67     0.75     0.93   |
-    Dog          | 570     470   | 14.6%    16.2%    13.3%  | 1.56     0.87     0.69   |
-    Alarm_bell.. | 420     321   | 32.7%    37.7%    28.8%  | 1.19     0.71     0.48   |
-    Running_wa.. | 237     221   | 36.7%    38.0%    35.4%  | 1.22     0.65     0.58   |
-    Frying       | 94      101   | 49.2%    47.5%    51.1%  | 1.05     0.49     0.56   |
+    Electric_s.. | 108     86    | 42.3%    47.7%    38.0%  | 1.04     0.62     0.42   |
+    Cat          | 240     273   | 56.5%    53.1%    60.4%  | 0.93     0.40     0.53   |
+    Dog          | 441     279   | 21.9%    28.3%    17.9%  | 1.27     0.82     0.45   |
+    Speech       | 913     649   | 26.2%    31.6%    22.5%  | 1.26     0.78     0.49   |
+    Running_wa.. | 109     75    | 40.2%    49.3%    33.9%  | 1.01     0.66     0.35   |
+    Vacuum_cle.. | 96      121   | 49.8%    44.6%    56.2%  | 1.14     0.44     0.70   |
+    Alarm_bell.. | 196     108   | 27.0%    38.0%    20.9%  | 1.13     0.79     0.34   |
+    Dishes       | 488     339   | 29.7%    36.3%    25.2%  | 1.19     0.75     0.44   |
+    Frying       | 90      75    | 50.9%    56.0%    46.7%  | 0.90     0.53     0.37   |
+    Blender      | 84      44    | 28.1%    40.9%    21.4%  | 1.10     0.79     0.31   |
 

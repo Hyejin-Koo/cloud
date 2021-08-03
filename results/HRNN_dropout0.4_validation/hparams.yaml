@@ -45,12 +45,12 @@ data:
   synth_val_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/validation/synthetic21_validation/soundscapes/
   synth_val_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/synthetic21_validation/soundscapes.tsv
   synth_val_dur: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/synthetic21_validation/durations.tsv
-  test_folder: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/dataset/audio/eval/public_16k/
-  test_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/eval/public/
-  test_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dataset/metadata/eval/public.tsv
-  test_dur: /home1/irteam/users/koo/share/DB/dcase2021/data/dataset/metadata/eval/public_durations.tsv
+  test_folder: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/dataset/audio/validation/validation_16k/
+  test_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/validation/validation/
+  test_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/validation.tsv
+  test_dur: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/metadata/validation/validation_durations.tsv
   w2v_path: /home1/irteam/users/koo/fairseq/examples/hubert/hubert_base_ls960.pt
-  audio_max_len: 11
+  audio_max_len: 10
   fs: 16000
   net_subsample: 4
 opt:

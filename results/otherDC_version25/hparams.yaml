@@ -5,7 +5,7 @@ training:
   - 6
   batch_size_val: 24
   const_max: 2
-  n_epochs_warmup: 3
+  n_epochs_warmup: 5
   num_workers: 6
   n_epochs: 400
   early_stop_patience: 200
@@ -23,8 +23,7 @@ training:
   seed: 42
   mixup: soft
   obj_metric_synth_type: intersection
-  note: after wav2vec, HRNN, 768cells(direct), lib960h  hop80(default), lr 0.00005,
-    no-SpecAug, rnn dropout 0.4
+  note: applying wav2vec-libother&DCASE21, 1rnn, no-SpecAugment, lr 0.00001 WRNN directly(768cells)
 scaler:
   statistic: instance
   normtype: minmax
@@ -49,12 +48,12 @@ data:
   test_folder_44k: /home1/irteam/users/koo/share/DB/dcase2021/data/dcase2021/dataset/audio/eval/public/
   test_tsv: /home1/irteam/users/koo/share/DB/dcase2021/data/dataset/metadata/eval/public.tsv
   test_dur: /home1/irteam/users/koo/share/DB/dcase2021/data/dataset/metadata/eval/public_durations.tsv
-  w2v_path: /home1/irteam/users/koo/fairseq/examples/hubert/hubert_base_ls960.pt
+  w2v_path: /home1/irteam/users/koo/fairseq/examples/wav2vec/train/DCASE2021/libripre_dc_rep/checkpoint_best.pt
   audio_max_len: 11
   fs: 16000
   net_subsample: 4
 opt:
-  lr: 5.0e-05
+  lr: 1.0e-05
 feats:
   n_mels: 128
   n_filters: 2048
@@ -119,8 +118,8 @@ net:
     - 2
   - - 1
     - 2
-  dropout_recurrent: 0.4
-  freq_mask_para: 18
-  time_mask_num: 8
-  freq_mask_num: 10
+  dropout_recurrent: 0
+  freq_mask_para: 0
+  time_mask_num: 0
+  freq_mask_num: 0
 log_dir: ./exp/2021_baseline
