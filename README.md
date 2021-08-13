@@ -1,4 +1,4 @@
-# cloud
+# cloud ☁
 
 This repo is a storage for sharing files among several severs.
 
