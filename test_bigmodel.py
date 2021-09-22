@@ -11,3 +11,4 @@ big_cfg = OmegaConf.create(vars(vars(model['args'])['w2v_args']))
 
 sed = WRNN(big_cfg)
 pdb.set_trace()
+sed.w2v.load_state_dict(model['model'])
