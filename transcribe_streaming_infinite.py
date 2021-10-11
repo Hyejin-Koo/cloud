@@ -142,12 +142,18 @@ class ResumableMicrophoneStream:
 
             if chunk is None:
                 return
+            self.counter = 0 
             data.append(chunk)
             # Now consume whatever other data's still buffered.
             while True:
                 try:
                     chunk = self._buff.get(block=False)
-
+                    if self.counter % 50 == 0:
+                        print(data)
+                        print('=========================================')
+                        print('=========================================')
+                        print('=========================================')
+                        print(self.audio_input)
                     if chunk is None:
                         return
                     data.append(chunk)
@@ -155,7 +161,7 @@ class ResumableMicrophoneStream:
 
                 except queue.Empty:
                     break
-
+                self.counter+=1
             yield b"".join(data)
 
 
@@ -239,7 +245,7 @@ def main():
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=SAMPLE_RATE,
-        language_code="en-US",
+        language_code="ko-KR",
         max_alternatives=1,
     )
 
