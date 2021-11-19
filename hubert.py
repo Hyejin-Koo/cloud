@@ -16,7 +16,7 @@ from fairseq.data.data_utils import compute_mask_indices
 from fairseq.data.dictionary import Dictionary
 from fairseq.dataclass import ChoiceEnum, FairseqDataclass
 from fairseq.models import BaseFairseqModel, register_model
-from fairseq.models.wav2vec.wav2vec2 import (
+from fairseq.models.wav2vec.wav2vec2_forHubert import (
     ConvFeatureExtractionModel,
     TransformerEncoder,
 )
@@ -217,13 +217,13 @@ class HubertConfig(FairseqDataclass):
     )
 
 
-@register_model("hubert", dataclass=HubertConfig)
+@register_model("hubert_sed", dataclass=HubertConfig)
 class HubertModel(BaseFairseqModel):
     def __init__(
         self,
         cfg: HubertConfig,
-        task_cfg: HubertPretrainingConfig,
-        dictionaries: List[Dictionary],
+        task_cfg: HubertPretrainingConfig, #use only task_cfg.sample_rate -> hand-coding
+        #dictionaries: List[Dictionary],
     ) -> None:
         super().__init__()
         logger.info(f"HubertModel Config: {cfg}")
@@ -238,10 +238,14 @@ class HubertModel(BaseFairseqModel):
             conv_bias=cfg.conv_bias,
         )
         feature_ds_rate = np.prod([s for _, _, s in feature_enc_layers])
-        self.feat2tar_ratio = (
-            cfg.label_rate * feature_ds_rate / task_cfg.sample_rate
-        )
-
+        try: 
+            self.feat2tar_ratio = (
+                cfg.label_rate * feature_ds_rate / 16000 #task_cfg.sample_rate
+            )
+        except:
+            self.feat2tar_ratio = (
+                100 * feature_ds_rate / 16000
+                )
         self.post_extract_proj = (
             nn.Linear(self.embed, cfg.encoder_embed_dim)
             if self.embed != cfg.encoder_embed_dim
@@ -270,6 +274,7 @@ class HubertModel(BaseFairseqModel):
         self.skip_masked = cfg.skip_masked
         self.skip_nomask = cfg.skip_nomask
 
+
         final_dim = (
             cfg.final_dim if cfg.final_dim > 0 else cfg.encoder_embed_dim
         )
@@ -290,20 +295,21 @@ class HubertModel(BaseFairseqModel):
         self.untie_final_proj = cfg.untie_final_proj
         if self.untie_final_proj:
             self.final_proj = nn.Linear(
-                cfg.encoder_embed_dim, final_dim * len(dictionaries)
+                cfg.encoder_embed_dim, final_dim  # * 10 # origin: instead 10 of len(dictionaries)
             )
         else:
             self.final_proj = nn.Linear(cfg.encoder_embed_dim, final_dim)
 
         # modules below are not needed during fine-tuning
-        if any([d is None for d in dictionaries]):
+        if False: #any([d is None for d in dictionaries]): #modified
             logger.info(
                 "cannot find dictionary. assume will be used for fine-tuning"
             )
         else:
-            self.num_classes = [len(d) for d in dictionaries]
+            self.num_classes = 24 #504 # [len(d) for d in dictionaries]
             self.label_embs_concat = nn.Parameter(
-                torch.FloatTensor(sum(self.num_classes), final_dim)
+#                torch.FloatTensor(sum(self.num_classes), final_dim)
+                torch.FloatTensor(self.num_classes,256) #hard-coding for loading pre-trained hubert
             )
             nn.init.uniform_(self.label_embs_concat)
 
@@ -317,7 +323,7 @@ class HubertModel(BaseFairseqModel):
     def build_model(cls, cfg: HubertConfig, task: HubertPretrainingTask):
         """Build a new model instance."""
 
-        model = HubertModel(cfg, task.cfg, task.dictionaries)
+        model = HubertModel(cfg, task.cfg) #, task.dictionaries)
         return model
 
     def apply_mask(self, x, padding_mask, target_list):
@@ -415,7 +421,7 @@ class HubertModel(BaseFairseqModel):
         target_list: Optional[List[torch.Tensor]] = None,
         padding_mask: Optional[torch.Tensor] = None,
         mask: bool = True,
-        features_only: bool = False,
+        features_only: bool = True,
         output_layer: Optional[int] = None,
     ) -> Dict[str, torch.Tensor]:
         """output layer is 1-based"""
