@@ -5,8 +5,8 @@ import torch
 
 from .RNN import BidirectionalGRU
 
-from .wav2vec2 import Wav2Vec2Model as w2v_encoder
-from desed_task.utils.scaler import TorchScaler
+from fairseq.models.wav2vec.wav2vec2_sknet import Wav2Vec2Model as w2v_encoder
+
 
 
 
@@ -15,7 +15,6 @@ class WRNN(nn.Module):
     def __init__(
         self,
         w2v_cfg,
-        config,
         n_in_channel=1,
         nclass=10,
         attention=True,
@@ -50,9 +49,7 @@ class WRNN(nn.Module):
             **kwargs: keywords arguments for CNN.
         """
         super(WRNN, self).__init__()
-        self.hparams = config
         self.n_in_channel = n_in_channel
-        self.scaler = self._init_scaler()
         self.attention = attention
         self.cnn_integration = cnn_integration
         self.freeze_bn = freeze_bn
@@ -95,13 +92,15 @@ class WRNN(nn.Module):
 #        x = feature.transpose(1,2)
         x = feature['x']
         x = self.activation(x)
-        x = self.scaler(x)
+
 
 
         # input size : (batch_size, n_frames, n) = [B,499,768]
 #        x = self.before_rnn(x)
 
+        x = x.transpose(0,1) # batch_first
         # rnn features
+        import pdb; pdb.set_trace()
         x = self.rnn(x)
         x = self.dropout(x)
         strong = self.dense(x)  # [bs, frames, nclass]
@@ -133,54 +132,3 @@ class WRNN(nn.Module):
                     if self.freeze_bn:
                         m.weight.requires_grad = False
                         m.bias.requires_grad = False
-                        
-                        
-    def _init_scaler(self):
-        """ Scaler inizialization
-        Raises:
-            NotImplementedError: in case of not Implemented scaler
-        Returns:
-            TorchScaler: returns the scaler
-        """
-
-        if self.hparams["scaler"]["statistic"] == "instance":
-            scaler = TorchScaler(
-                "instance",
-                self.hparams["scaler"]["normtype"],
-                self.hparams["scaler"]["dims"],
-            )
-
-            return scaler
-        elif self.hparams["scaler"]["statistic"] == "dataset":
-            # we fit the scaler
-            scaler = TorchScaler(
-                "dataset",
-                self.hparams["scaler"]["normtype"],
-                self.hparams["scaler"]["dims"],
-            )
-        else:
-            raise NotImplementedError
-        if self.hparams["scaler"]["savepath"] is not None:
-            if os.path.exists(self.hparams["scaler"]["savepath"]):
-                scaler = torch.load(self.hparams["scaler"]["savepath"])
-                print(
-                    "Loaded Scaler from previous checkpoint from {}".format(
-                        self.hparams["scaler"]["savepath"]
-                    )
-                )
-                return scaler
-
-        self.train_loader = self.train_dataloader()
-        scaler.fit(
-            self.train_loader,
-            transform_func=lambda x: self.take_log(self.mel_spec(x[0])),
-        )
-
-        if self.hparams["scaler"]["savepath"] is not None:
-            torch.save(scaler, self.hparams["scaler"]["savepath"])
-            print(
-                "Saving Scaler from previous checkpoint at {}".format(
-                    self.hparams["scaler"]["savepath"]
-                )
-            )
-            return scaler

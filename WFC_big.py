@@ -4,18 +4,30 @@ import torch.nn as nn
 import torch
 
 from .RNN import BidirectionalGRU
+from .fairseq_pjh.models import BaseFairseqModel
+from .wav2vec2 import Wav2Vec2Model_big, Wav2Vec2Config #as w2v_encoder
+#from .wav2vec2 import Wav2Vec2Model as w2v_encoder
+from .fairseq_pjh.fairseq.models.wav2vec.wav2vec2 import Wav2Vec2Model as w2v_encoder
+#from .fairseq_pjh.models.wav2vec.wav2vec import Wav2Vec2Model, Wav2Vec2Config
 
-from .wav2vec2 import Wav2Vec2Model as w2v_encoder
-from desed_task.utils.scaler import TorchScaler
+
+class Wav2Vec2Encoder(BaseFairseqModel):
+    def __init__(self, cfg:Wav2Vec2Config):
+        super().__init__()
+        self.cfg = cfg
+        self.w2v_encoder = Wav2Vec2Model_big(cfg)
+        #self.proj = nn.Linear(1024,2001)
+
+    def forward(self,x):
+        w2v_feature = self.w2v_encoder(x) #out_dim: 2001 hmm..is it additional fc layer?
+    #    x = self.proj(w2v_feature)
+        return w2v_feature
 
 
-
-
-class WRNN(nn.Module):
+class WFC(nn.Module):
     def __init__(
         self,
         w2v_cfg,
-        config,
         n_in_channel=1,
         nclass=10,
         attention=True,
@@ -31,7 +43,7 @@ class WRNN(nn.Module):
         **kwargs,
     ):
         """
-            Initialization of WRNN model
+            Initialization of WFC model
         
         Args:
             w2v_cfg: pre-trained wav2vec configuration
@@ -49,60 +61,39 @@ class WRNN(nn.Module):
             freeze_bn: 
             **kwargs: keywords arguments for CNN.
         """
-        super(WRNN, self).__init__()
-        self.hparams = config
+        super(WFC, self).__init__()
         self.n_in_channel = n_in_channel
-        self.scaler = self._init_scaler()
         self.attention = attention
-        self.cnn_integration = cnn_integration
+        self.cnn_integration =False #cnn_integration
         self.freeze_bn = freeze_bn
 
         n_in_cnn = n_in_channel
-
+        #self.w2v = Wav2Vec2Encoder(w2v_cfg)
         self.w2v = w2v_encoder(w2v_cfg)
         self.activation = nn.ReLU() # insert activateion between w2v and CNN, may use ReLU either
         
 
 #        self.before_rnn = nn.Linear(768, 128) #n_RNN_cell)
 
-        if rnn_type == "BGRU":
-            nb_in = n_RNN_cell
-            if self.cnn_integration:
-                # self.fc = nn.Linear(nb_in * n_in_channel, nb_in)
-                nb_in = nb_in * n_in_channel
-            self.rnn = BidirectionalGRU(
-                n_in=nb_in,
-                n_hidden=n_RNN_cell,
-                dropout=dropout_recurrent,
-                num_layers=n_layers_RNN,
-            )
-        else:
-            NotImplementedError("Only BGRU supported for CRNN for now")
-
         self.dropout = nn.Dropout(dropout)
-        self.dense = nn.Linear(n_RNN_cell * 2, nclass)
+        self.dense = nn.Linear(n_RNN_cell, nclass)
+        #self.dense = nn.Linear(n_RNN_cell * 2, nclass)
         self.sigmoid = nn.Sigmoid()
 
         if self.attention:
-            self.dense_softmax = nn.Linear(n_RNN_cell * 2, nclass)
+            self.dense_softmax = nn.Linear(n_RNN_cell, nclass)
             self.softmax = nn.Softmax(dim=-1)
 
     def forward(self, x, pad_mask=None):
-
         #x = x.transpose(1, 2).unsqueeze(1)
         # wav2vec model extracts feature
-        feature = self.w2v(x)
-#        x = feature.transpose(1,2)
-        x = feature['x']
-        x = self.activation(x)
-        x = self.scaler(x)
+        feature = self.w2v(x, features_only=True)['x']
+        x = self.activation(feature)
+
 
 
         # input size : (batch_size, n_frames, n) = [B,499,768]
 #        x = self.before_rnn(x)
-
-        # rnn features
-        x = self.rnn(x)
         x = self.dropout(x)
         strong = self.dense(x)  # [bs, frames, nclass]
         strong = self.sigmoid(strong)
@@ -121,7 +112,7 @@ class WRNN(nn.Module):
         """
         Override the default train() to freeze the BN parameters
         """
-        super(WRNN, self).train(mode)
+        super(WFC, self).train(mode)
         if self.freeze_bn:
             print("Freezing Mean/Var of BatchNorm2D.")
             if self.freeze_bn:
@@ -133,54 +124,3 @@ class WRNN(nn.Module):
                     if self.freeze_bn:
                         m.weight.requires_grad = False
                         m.bias.requires_grad = False
-                        
-                        
-    def _init_scaler(self):
-        """ Scaler inizialization
-        Raises:
-            NotImplementedError: in case of not Implemented scaler
-        Returns:
-            TorchScaler: returns the scaler
-        """
-
-        if self.hparams["scaler"]["statistic"] == "instance":
-            scaler = TorchScaler(
-                "instance",
-                self.hparams["scaler"]["normtype"],
-                self.hparams["scaler"]["dims"],
-            )
-
-            return scaler
-        elif self.hparams["scaler"]["statistic"] == "dataset":
-            # we fit the scaler
-            scaler = TorchScaler(
-                "dataset",
-                self.hparams["scaler"]["normtype"],
-                self.hparams["scaler"]["dims"],
-            )
-        else:
-            raise NotImplementedError
-        if self.hparams["scaler"]["savepath"] is not None:
-            if os.path.exists(self.hparams["scaler"]["savepath"]):
-                scaler = torch.load(self.hparams["scaler"]["savepath"])
-                print(
-                    "Loaded Scaler from previous checkpoint from {}".format(
-                        self.hparams["scaler"]["savepath"]
-                    )
-                )
-                return scaler
-
-        self.train_loader = self.train_dataloader()
-        scaler.fit(
-            self.train_loader,
-            transform_func=lambda x: self.take_log(self.mel_spec(x[0])),
-        )
-
-        if self.hparams["scaler"]["savepath"] is not None:
-            torch.save(scaler, self.hparams["scaler"]["savepath"])
-            print(
-                "Saving Scaler from previous checkpoint at {}".format(
-                    self.hparams["scaler"]["savepath"]
-                )
-            )
-            return scaler

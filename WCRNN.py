@@ -4,18 +4,18 @@ import torch.nn as nn
 import torch
 
 from .RNN import BidirectionalGRU
+from .CNN import CNN
 
 from .wav2vec2 import Wav2Vec2Model as w2v_encoder
-from desed_task.utils.scaler import TorchScaler
 
 
 
 
-class WRNN(nn.Module):
+
+class WCRNN(nn.Module):
     def __init__(
         self,
         w2v_cfg,
-        config,
         n_in_channel=1,
         nclass=10,
         attention=True,
@@ -31,7 +31,7 @@ class WRNN(nn.Module):
         **kwargs,
     ):
         """
-            Initialization of WRNN model
+            Initialization of WCRNN model
         
         Args:
             w2v_cfg: pre-trained wav2vec configuration
@@ -49,10 +49,8 @@ class WRNN(nn.Module):
             freeze_bn: 
             **kwargs: keywords arguments for CNN.
         """
-        super(WRNN, self).__init__()
-        self.hparams = config
+        super(WCRNN, self).__init__()
         self.n_in_channel = n_in_channel
-        self.scaler = self._init_scaler()
         self.attention = attention
         self.cnn_integration = cnn_integration
         self.freeze_bn = freeze_bn
@@ -60,13 +58,22 @@ class WRNN(nn.Module):
         n_in_cnn = n_in_channel
 
         self.w2v = w2v_encoder(w2v_cfg)
-        self.activation = nn.ReLU() # insert activateion between w2v and CNN, may use ReLU either
-        
+        self.activation = nn.Sigmoid() # insert activateion between w2v and CNN, may use ReLU either
 
-#        self.before_rnn = nn.Linear(768, 128) #n_RNN_cell)
+        if cnn_integration:
+            n_in_cnn = 1
+
+        self.cnn = CNN(
+            n_in_channel=n_in_cnn, activation=activation, conv_dropout=dropout, **kwargs
+        )
+
+        self.train_cnn = train_cnn
+        if not train_cnn:
+            for param in self.cnn.parameters():
+                param.requires_grad = False
 
         if rnn_type == "BGRU":
-            nb_in = n_RNN_cell
+            nb_in = self.cnn.nb_filters[-1]
             if self.cnn_integration:
                 # self.fc = nn.Linear(nb_in * n_in_channel, nb_in)
                 nb_in = nb_in * n_in_channel
@@ -92,14 +99,32 @@ class WRNN(nn.Module):
         #x = x.transpose(1, 2).unsqueeze(1)
         # wav2vec model extracts feature
         feature = self.w2v(x)
-#        x = feature.transpose(1,2)
         x = feature['x']
+        x = x.unsqueeze(1)
         x = self.activation(x)
-        x = self.scaler(x)
 
 
-        # input size : (batch_size, n_frames, n) = [B,499,768]
-#        x = self.before_rnn(x)
+
+        # input size : (batch_size, n_channels, n_frames, n_freq)
+        if self.cnn_integration:
+            bs_in, nc_in = x.size(0), x.size(1)
+            x = x.view(bs_in * nc_in, 1, *x.shape[2:])
+
+        # conv features
+        x = self.cnn(x)
+        bs, chan, frames, freq = x.size()
+        if self.cnn_integration:
+            x = x.reshape(bs_in, chan * nc_in, frames, freq)
+
+        if freq != 1:
+            warnings.warn(
+                f"Output shape is: {(bs, frames, chan * freq)}, from {freq} staying freq"
+            )
+            x = x.permute(0, 2, 1, 3)
+            x = x.contiguous().view(bs, frames, chan * freq)
+        else:
+            x = x.squeeze(-1)
+            x = x.permute(0, 2, 1)  # [bs, frames, chan]
 
         # rnn features
         x = self.rnn(x)
@@ -121,7 +146,7 @@ class WRNN(nn.Module):
         """
         Override the default train() to freeze the BN parameters
         """
-        super(WRNN, self).train(mode)
+        super(WCRNN, self).train(mode)
         if self.freeze_bn:
             print("Freezing Mean/Var of BatchNorm2D.")
             if self.freeze_bn:
@@ -133,54 +158,3 @@ class WRNN(nn.Module):
                     if self.freeze_bn:
                         m.weight.requires_grad = False
                         m.bias.requires_grad = False
-                        
-                        
-    def _init_scaler(self):
-        """ Scaler inizialization
-        Raises:
-            NotImplementedError: in case of not Implemented scaler
-        Returns:
-            TorchScaler: returns the scaler
-        """
-
-        if self.hparams["scaler"]["statistic"] == "instance":
-            scaler = TorchScaler(
-                "instance",
-                self.hparams["scaler"]["normtype"],
-                self.hparams["scaler"]["dims"],
-            )
-
-            return scaler
-        elif self.hparams["scaler"]["statistic"] == "dataset":
-            # we fit the scaler
-            scaler = TorchScaler(
-                "dataset",
-                self.hparams["scaler"]["normtype"],
-                self.hparams["scaler"]["dims"],
-            )
-        else:
-            raise NotImplementedError
-        if self.hparams["scaler"]["savepath"] is not None:
-            if os.path.exists(self.hparams["scaler"]["savepath"]):
-                scaler = torch.load(self.hparams["scaler"]["savepath"])
-                print(
-                    "Loaded Scaler from previous checkpoint from {}".format(
-                        self.hparams["scaler"]["savepath"]
-                    )
-                )
-                return scaler
-
-        self.train_loader = self.train_dataloader()
-        scaler.fit(
-            self.train_loader,
-            transform_func=lambda x: self.take_log(self.mel_spec(x[0])),
-        )
-
-        if self.hparams["scaler"]["savepath"] is not None:
-            torch.save(scaler, self.hparams["scaler"]["savepath"])
-            print(
-                "Saving Scaler from previous checkpoint at {}".format(
-                    self.hparams["scaler"]["savepath"]
-                )
-            )
-            return scaler

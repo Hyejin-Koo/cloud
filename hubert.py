@@ -306,7 +306,8 @@ class HubertModel(BaseFairseqModel):
                 "cannot find dictionary. assume will be used for fine-tuning"
             )
         else:
-            self.num_classes = 24 #504 # [len(d) for d in dictionaries]
+            self.num_classes = 20 #24 #504 # [len(d) for d in dictionaries] #hubert 16c
+            #self.num_classes = 24
             self.label_embs_concat = nn.Parameter(
 #                torch.FloatTensor(sum(self.num_classes), final_dim)
                 torch.FloatTensor(self.num_classes,256) #hard-coding for loading pre-trained hubert
