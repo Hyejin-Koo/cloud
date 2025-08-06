@@ -2,3 +2,5 @@
 *.tar.gz
 *.tsv
 *.wav
+*pyc
+*/__pycache__/

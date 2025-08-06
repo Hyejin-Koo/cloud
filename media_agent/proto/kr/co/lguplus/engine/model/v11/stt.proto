@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package kr.co.lguplus.engine.model.v1;
+
+option java_multiple_files = true;
+
+message StreamRequest {
+  int32 query_header=1;
+  string uuid = 2;
+  bytes audio_data = 3;
+}
+
+message StreamReply {
+  int32 query_header=1;
+  int32 epd_result = 2;
+  string stt_result = 3;
+  int32 connect_reply=4;
+}

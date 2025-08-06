@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package kr.co.lguplus.engine.service.v1;
+
+option java_multiple_files = true;
+
+import "kr/co/lguplus/engine/model/v1/stt.proto";
+
+service SttService {
+  rpc GetStream(stream kr.co.lguplus.engine.model.v1.StreamRequest) returns (stream kr.co.lguplus.engine.model.v1.StreamReply);
+}
+
+
